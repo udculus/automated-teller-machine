@@ -132,7 +132,7 @@ public class TransferScreen {
         System.out.println("Destination Account         : " + accountNumber);
         System.out.println("Transfer Amount             : $" + transferAmount);
         System.out.println("Reference Number            : " + referenceNumber);
-        System.out.println("Balance                     : " + balance);
+        System.out.println("Balance                     : $" + balance);
 
         System.out.println("\n1. Transaction");
         System.out.println("2. Exit");
