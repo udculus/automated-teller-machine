@@ -1,6 +1,7 @@
 package com.mitrais.atm.screen;
 
 import com.mitrais.atm.dao.AccountDaoImpl;
+import com.mitrais.atm.exception.InsufficientBalanceException;
 import com.mitrais.atm.model.Account;
 import com.mitrais.atm.model.Validation;
 import com.mitrais.atm.validation.WithdrawValidation;
@@ -67,15 +68,12 @@ public class WithdrawScreen {
      * @param amount
      */
     public void withdraw(Account account, int amount) {
-        Validation validateBalance;
-
-        validateBalance = WithdrawValidation.validateBalance(account, amount);
-        if (!validateBalance.isValid()) {
-            System.out.println(validateBalance.getMessage());
-            show(account);
-        } else {
+        try {
             AccountDaoImpl.getInstance().withdraw(account, amount);
             showSummaryWithdrawal(account, amount);
+        } catch (InsufficientBalanceException e) {
+            System.out.println("Insufficient balance $" + e.getAmount());
+            show(account);
         }
     }
 

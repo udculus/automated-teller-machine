@@ -1,6 +1,5 @@
 package com.mitrais.atm.validation;
 
-import com.mitrais.atm.model.Account;
 import com.mitrais.atm.model.Validation;
 
 public class WithdrawValidation {
@@ -21,23 +20,6 @@ public class WithdrawValidation {
             }
         } else {
             validation.setMessage("Invalid amount");
-            validation.setValid(false);
-        }
-        return validation;
-    }
-
-    /**
-     * Validate account balance before withdrawal
-     * @param account
-     * @param amount
-     * @return
-     */
-    public static Validation validateBalance(Account account, int amount) {
-        Validation validation = new Validation();
-        int currentBalance = account.getBalance();
-
-        if (currentBalance < amount) {
-            validation.setMessage("Insufficient balance $" + amount);
             validation.setValid(false);
         }
         return validation;

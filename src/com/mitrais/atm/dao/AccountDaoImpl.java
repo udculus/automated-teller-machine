@@ -1,5 +1,6 @@
 package com.mitrais.atm.dao;
 
+import com.mitrais.atm.exception.InsufficientBalanceException;
 import com.mitrais.atm.model.Account;
 
 import java.util.ArrayList;
@@ -84,11 +85,14 @@ public class AccountDaoImpl implements AccountDao {
      * @param amount
      */
     @Override
-    public void withdraw(Account account, int amount) {
+    public void withdraw(Account account, int amount) throws InsufficientBalanceException {
         int accountBalance = account.getBalance();
 
-        accountBalance -= amount;
-
-        account.setBalance(accountBalance);
+        if (accountBalance < amount) {
+            throw new InsufficientBalanceException(amount);
+        } else {
+            accountBalance -= amount;
+            account.setBalance(accountBalance);
+        }
     }
 }
