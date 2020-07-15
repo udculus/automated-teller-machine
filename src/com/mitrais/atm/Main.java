@@ -10,8 +10,7 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        AccountDaoImpl accountDao = AccountDaoImpl.getInstance();
-        accountDao.seedAccounts();
+        AccountDaoImpl.getInstance().seedAccounts();
 
         LoginScreen.getInstance().show();
     }
