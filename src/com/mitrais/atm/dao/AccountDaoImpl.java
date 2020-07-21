@@ -1,22 +1,16 @@
 package com.mitrais.atm.dao;
 
 import com.mitrais.atm.model.Account;
+import com.mitrais.atm.repository.AccountRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AccountDaoImpl implements AccountDao {
 
     List<Account> accounts;
 
-    /**
-     * Seed account to list
-     */
-    @Override
-    public void seedAccounts() {
-        accounts = new ArrayList<Account>();
-        accounts.add(new Account("112233", "012108", "John Doe", 100));
-        accounts.add(new Account("112244", "932012", "Jane Doe", 30));
+    public AccountDaoImpl() {
+        accounts = AccountRepository.getInstance().getAccounts();
     }
 
     /**
