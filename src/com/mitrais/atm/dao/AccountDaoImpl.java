@@ -1,6 +1,5 @@
 package com.mitrais.atm.dao;
 
-import com.mitrais.atm.exception.InsufficientBalanceException;
 import com.mitrais.atm.model.Account;
 
 import java.util.ArrayList;
@@ -8,18 +7,7 @@ import java.util.List;
 
 public class AccountDaoImpl implements AccountDao {
 
-    private static AccountDaoImpl instance;
     List<Account> accounts;
-
-    private AccountDaoImpl() {
-    }
-
-    public static AccountDaoImpl getInstance() {
-        if (instance == null) {
-            instance = new AccountDaoImpl();
-        }
-        return instance;
-    }
 
     /**
      * Seed account to list
@@ -37,11 +25,11 @@ public class AccountDaoImpl implements AccountDao {
      * @return
      */
     @Override
-    public Account getAccount(String accountNumber) {
+    public Account getAccount(String accountNumber) throws Exception {
         return accounts.stream()
                 .filter(account -> accountNumber.equals(account.getAccountNumber()))
                 .findAny()
-                .orElse(null);
+                .orElseThrow(() -> new Exception("Invalid Account"));
     }
 
     /**
@@ -51,48 +39,10 @@ public class AccountDaoImpl implements AccountDao {
      * @return
      */
     @Override
-    public Account getAccount(String accountNumber, String pin) {
+    public Account authenticateAccount(String accountNumber, String pin) throws Exception {
         return accounts.stream()
                 .filter(account -> accountNumber.equals(account.getAccountNumber()) && pin.equals(account.getPin()))
                 .findAny()
-                .orElse(null);
-    }
-
-    /**
-     * Transfer fund from logged in account to destination account with inputted amount of value
-     * @param account
-     * @param receiver
-     * @param amount
-     * @return
-     */
-    @Override
-    public int transferFund(Account account, Account receiver, int amount) {
-        int accountBalance = account.getBalance();
-        int receiverBalance = receiver.getBalance();
-
-        accountBalance -= amount;
-        receiverBalance += amount;
-
-        account.setBalance(accountBalance);
-        receiver.setBalance(receiverBalance);
-
-        return account.getBalance();
-    }
-
-    /**
-     * Deduct balance of the logged in account
-     * @param account
-     * @param amount
-     */
-    @Override
-    public void withdraw(Account account, int amount) throws InsufficientBalanceException {
-        int accountBalance = account.getBalance();
-
-        if (accountBalance < amount) {
-            throw new InsufficientBalanceException(amount);
-        } else {
-            accountBalance -= amount;
-            account.setBalance(accountBalance);
-        }
+                .orElseThrow(() -> new Exception("Invalid Account Number/PIN"));
     }
 }
