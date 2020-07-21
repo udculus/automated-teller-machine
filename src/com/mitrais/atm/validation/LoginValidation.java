@@ -10,7 +10,7 @@ public class LoginValidation {
      * @param label
      * @return
      */
-    public static Validation validateLoginFields(String value, String label) {
+    public static void validateLoginFields(String value, String label) throws Exception {
         Validation validation = new Validation();
 
         if (value.length() != 6) {
@@ -21,7 +21,7 @@ public class LoginValidation {
             validation.setValid(false);
         }
 
-        return validation;
+        if (!validation.isValid()) throw new Exception(validation.getMessage());
     }
 
 }

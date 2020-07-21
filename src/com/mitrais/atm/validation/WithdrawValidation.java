@@ -9,7 +9,7 @@ public class WithdrawValidation {
      * @param amount
      * @return
      */
-    public static Validation validateWithdrawalField(String amount) {
+    public static void validateWithdrawalField(String amount) throws Exception {
         Validation validation = new Validation();
 
         if (amount.matches("[0-9]+")) {
@@ -22,6 +22,7 @@ public class WithdrawValidation {
             validation.setMessage("Invalid amount");
             validation.setValid(false);
         }
-        return validation;
+
+        if (!validation.isValid()) throw new Exception(validation.getMessage());
     }
 }

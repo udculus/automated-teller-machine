@@ -1,6 +1,6 @@
 package com.mitrais.atm.validation;
 
-import com.mitrais.atm.dao.AccountDaoImpl;
+import com.mitrais.atm.dao.AccountDao;
 import com.mitrais.atm.model.Account;
 import com.mitrais.atm.model.Validation;
 
@@ -11,19 +11,22 @@ public class TransferValidation {
      * @param accountNumber
      * @return
      */
-    public static Validation validateDestinationAccountField(String accountNumber) {
+    public static void validateDestinationAccountField(AccountDao accountDao, String accountNumber) throws Exception {
         Validation validation = new Validation();
 
         if (accountNumber.matches("[0-9]+")) {
-            if (AccountDaoImpl.getInstance().getAccount(accountNumber) == null) {
-                validation.setMessage("Invalid account");
+            try {
+                accountDao.getAccount(accountNumber);
+            } catch (Exception e) {
+                validation.setMessage(e.getMessage());
                 validation.setValid(false);
             }
         } else {
             validation.setMessage("Invalid account");
             validation.setValid(false);
         }
-        return validation;
+
+        if (!validation.isValid()) throw new Exception(validation.getMessage());
     }
 
     /**
@@ -32,7 +35,7 @@ public class TransferValidation {
      * @param amount
      * @return
      */
-    public static Validation validateTransferAmountField(Account account, String amount) {
+    public static void validateTransferAmountField(Account account, String amount) throws Exception {
         Validation validation = new Validation();
 
         if (amount.matches("[0-9]+")) {
@@ -52,6 +55,7 @@ public class TransferValidation {
             validation.setMessage("Invalid amount");
             validation.setValid(false);
         }
-        return validation;
+
+        if (!validation.isValid()) throw new Exception(validation.getMessage());
     }
 }
