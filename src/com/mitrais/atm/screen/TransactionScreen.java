@@ -1,20 +1,17 @@
 package com.mitrais.atm.screen;
 
-import com.mitrais.atm.dao.AccountDao;
 import com.mitrais.atm.model.Account;
 
 import java.util.Scanner;
 
 public class TransactionScreen {
 
-    AccountDao accountDao;
-    Account account;
-    LoginScreen loginScreen;
-    TransferScreen transferScreen;
-    WithdrawScreen withdrawScreen;
+    private Account account;
+    private LoginScreen loginScreen;
+    private TransferScreen transferScreen;
+    private WithdrawScreen withdrawScreen;
 
-    public TransactionScreen(AccountDao accountDao, Account account) {
-        this.accountDao = accountDao;
+    public TransactionScreen(Account account) {
         this.account = account;
     }
 
@@ -22,9 +19,9 @@ public class TransactionScreen {
      * Shows transaction options
      */
     public void show() {
-        withdrawScreen = new WithdrawScreen(accountDao, account);
-        transferScreen = new TransferScreen(accountDao, account);
-        loginScreen = new LoginScreen(accountDao);
+        withdrawScreen = new WithdrawScreen(account);
+        transferScreen = new TransferScreen(account);
+        loginScreen = new LoginScreen();
 
         Scanner scanner = new Scanner(System.in);
         String selectedOption;

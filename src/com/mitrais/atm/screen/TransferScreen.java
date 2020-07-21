@@ -1,6 +1,7 @@
 package com.mitrais.atm.screen;
 
 import com.mitrais.atm.dao.AccountDao;
+import com.mitrais.atm.dao.AccountDaoImpl;
 import com.mitrais.atm.dao.TransactionDao;
 import com.mitrais.atm.dao.TransactionDaoImpl;
 import com.mitrais.atm.exception.InsufficientBalanceException;
@@ -12,17 +13,16 @@ import java.util.Scanner;
 
 public class TransferScreen {
 
+    private AccountDao accountDao = new AccountDaoImpl();
     private Account account;
+    private TransactionDao transactionDao;
+    private LoginScreen loginScreen;
+    private TransactionScreen transactionScreen;
+
     private String accountNumber, referenceNumber;
     private int transferAmount, balance;
 
-    AccountDao accountDao;
-    TransactionDao transactionDao;
-    LoginScreen loginScreen;
-    TransactionScreen transactionScreen;
-
-    public TransferScreen(AccountDao accountDao, Account account) {
-        this.accountDao = accountDao;
+    public TransferScreen(Account account) {
         this.account = account;
     }
 
@@ -34,8 +34,8 @@ public class TransferScreen {
         Scanner scanner = new Scanner(System.in);
         String inputAccountNumber;
 
-        loginScreen = new LoginScreen(accountDao);
-        transactionScreen = new TransactionScreen(accountDao, account);
+        loginScreen = new LoginScreen();
+        transactionScreen = new TransactionScreen(account);
         transactionDao = new TransactionDaoImpl();
 
         System.out.println("------------------------------------------------");

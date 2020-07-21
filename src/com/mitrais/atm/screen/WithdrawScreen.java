@@ -1,6 +1,5 @@
 package com.mitrais.atm.screen;
 
-import com.mitrais.atm.dao.AccountDao;
 import com.mitrais.atm.dao.TransactionDao;
 import com.mitrais.atm.dao.TransactionDaoImpl;
 import com.mitrais.atm.exception.InsufficientBalanceException;
@@ -13,14 +12,12 @@ import java.util.Scanner;
 
 public class WithdrawScreen {
 
-    AccountDao accountDao;
-    TransactionDao transactionDao;
-    Account account;
-    LoginScreen loginScreen;
-    TransactionScreen transactionScreen;
+    private TransactionDao transactionDao = new TransactionDaoImpl();
+    private Account account;
+    private LoginScreen loginScreen;
+    private TransactionScreen transactionScreen;
 
-    public WithdrawScreen(AccountDao accountDao, Account account) {
-        this.accountDao = accountDao;
+    public WithdrawScreen(Account account) {
         this.account = account;
     }
 
@@ -28,8 +25,7 @@ public class WithdrawScreen {
      * Shows withdrawal options
      */
     public void show() {
-        transactionScreen = new TransactionScreen(accountDao, account);
-        transactionDao = new TransactionDaoImpl();
+        transactionScreen = new TransactionScreen(account);
 
         Scanner scanner = new Scanner(System.in);
         String selectedOption;
@@ -146,7 +142,7 @@ public class WithdrawScreen {
         if (selectedOption.equals("1")) {
             transactionScreen.show();
         } else {
-            loginScreen = new LoginScreen(accountDao);
+            loginScreen = new LoginScreen();
             loginScreen.show();
         }
     }
