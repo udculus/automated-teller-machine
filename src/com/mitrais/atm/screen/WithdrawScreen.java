@@ -1,9 +1,10 @@
 package com.mitrais.atm.screen;
 
-import com.mitrais.atm.dao.AccountDaoImpl;
+import com.mitrais.atm.dao.AccountDao;
+import com.mitrais.atm.dao.TransactionDao;
+import com.mitrais.atm.dao.TransactionDaoImpl;
 import com.mitrais.atm.exception.InsufficientBalanceException;
 import com.mitrais.atm.model.Account;
-import com.mitrais.atm.model.Validation;
 import com.mitrais.atm.validation.WithdrawValidation;
 
 import java.time.LocalDateTime;
@@ -12,22 +13,24 @@ import java.util.Scanner;
 
 public class WithdrawScreen {
 
-    private static WithdrawScreen instance;
+    AccountDao accountDao;
+    TransactionDao transactionDao;
+    Account account;
+    LoginScreen loginScreen;
+    TransactionScreen transactionScreen;
 
-    private WithdrawScreen() {}
-
-    public static WithdrawScreen getInstance(){
-        if (instance == null) {
-            instance = new WithdrawScreen();
-        }
-        return instance;
+    public WithdrawScreen(AccountDao accountDao, Account account) {
+        this.accountDao = accountDao;
+        this.account = account;
     }
 
     /**
      * Shows withdrawal options
-     * @param account
      */
-    public void show(Account account) {
+    public void show() {
+        transactionScreen = new TransactionScreen(accountDao, account);
+        transactionDao = new TransactionDaoImpl();
+
         Scanner scanner = new Scanner(System.in);
         String selectedOption;
 
@@ -55,10 +58,10 @@ public class WithdrawScreen {
                 showCustomWithdrawal(account);
                 break;
             case "5":
-                TransferScreen.getInstance().show(account);
+                transactionScreen.show();
                 break;
             default:
-                show(account);
+                show();
         }
     }
 
@@ -67,13 +70,13 @@ public class WithdrawScreen {
      * @param account
      * @param amount
      */
-    public void withdraw(Account account, int amount) {
+    private void withdraw(Account account, int amount) {
         try {
-            AccountDaoImpl.getInstance().withdraw(account, amount);
+            transactionDao.withdraw(account, amount);
             showSummaryWithdrawal(account, amount);
         } catch (InsufficientBalanceException e) {
             System.out.println("Insufficient balance $" + e.getAmount());
-            show(account);
+            show();
         }
     }
 
@@ -81,26 +84,39 @@ public class WithdrawScreen {
      * Custom withdrawal by inputted amount of value
      * @param account
      */
-    public void showCustomWithdrawal(Account account) {
-        Validation validateWithdrawal;
+    private void showCustomWithdrawal(Account account) {
         Scanner scanner = new Scanner(System.in);
         String inputAmount;
+        boolean isValid;
 
         System.out.println("------------------------------------------------");
         System.out.println("Other Withdraw");
 
         do {
             System.out.print("Enter amount to withdraw: ");
-
             inputAmount = scanner.next();
-            validateWithdrawal = WithdrawValidation.validateWithdrawalField(inputAmount);
 
-            if (!validateWithdrawal.isValid()) {
-                System.out.println(validateWithdrawal.getMessage());
-            }
-        } while (!validateWithdrawal.isValid());
+            isValid = isValidWithdrawalField(inputAmount);
+        } while (!isValid);
 
         withdraw(account, Integer.valueOf(inputAmount));
+    }
+
+    /**
+     * Validate withdrawal field
+     * @param inputAmount
+     * @return
+     */
+    private boolean isValidWithdrawalField(String inputAmount) {
+        boolean isValid;
+        try {
+            WithdrawValidation.validateWithdrawalField(inputAmount);
+            isValid = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            isValid = false;
+        }
+        return isValid;
     }
 
     /**
@@ -108,7 +124,7 @@ public class WithdrawScreen {
      * @param account
      * @param amount
      */
-    public void showSummaryWithdrawal(Account account, int amount) {
+    private void showSummaryWithdrawal(Account account, int amount) {
         Scanner scanner = new Scanner(System.in);
         String selectedOption;
         LocalDateTime date = LocalDateTime.now();
@@ -128,9 +144,10 @@ public class WithdrawScreen {
         selectedOption = scanner.nextLine();
 
         if (selectedOption.equals("1")) {
-            TransactionScreen.getInstance().show(account);
+            transactionScreen.show();
         } else {
-            LoginScreen.getInstance().show();
+            loginScreen = new LoginScreen(accountDao);
+            loginScreen.show();
         }
     }
 }
