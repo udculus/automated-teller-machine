@@ -1,28 +1,31 @@
 package com.mitrais.atm.screen;
 
-import com.mitrais.atm.dao.AccountDaoImpl;
+import com.mitrais.atm.dao.AccountDao;
 import com.mitrais.atm.model.Account;
 
 import java.util.Scanner;
 
 public class TransactionScreen {
 
-    private static TransactionScreen instance;
+    AccountDao accountDao;
+    Account account;
+    LoginScreen loginScreen;
+    TransferScreen transferScreen;
+    WithdrawScreen withdrawScreen;
 
-    private TransactionScreen() {}
-
-    public static TransactionScreen getInstance(){
-        if (instance == null) {
-            instance = new TransactionScreen();
-        }
-        return instance;
+    public TransactionScreen(AccountDao accountDao, Account account) {
+        this.accountDao = accountDao;
+        this.account = account;
     }
 
     /**
      * Shows transaction options
-     * @param account
      */
-    public void show(Account account) {
+    public void show() {
+        withdrawScreen = new WithdrawScreen(accountDao, account);
+        transferScreen = new TransferScreen(accountDao, account);
+        loginScreen = new LoginScreen(accountDao);
+
         Scanner scanner = new Scanner(System.in);
         String selectedOption;
 
@@ -35,13 +38,13 @@ public class TransactionScreen {
         selectedOption = scanner.nextLine();
 
         if (selectedOption.equals("1")) {
-            WithdrawScreen.getInstance().show(account);
+            withdrawScreen.show();
         } else if (selectedOption.equals("2")) {
-            TransferScreen.getInstance().show(account);
+            transferScreen.show();
         } else if (selectedOption.equals("3") || selectedOption.equals("")) {
-            LoginScreen.getInstance().show();
+            loginScreen.show();
         } else {
-            show(account);
+            show();
         }
     }
 

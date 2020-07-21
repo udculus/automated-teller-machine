@@ -1,8 +1,10 @@
 package com.mitrais.atm.screen;
 
-import com.mitrais.atm.dao.AccountDaoImpl;
+import com.mitrais.atm.dao.AccountDao;
+import com.mitrais.atm.dao.TransactionDao;
+import com.mitrais.atm.dao.TransactionDaoImpl;
+import com.mitrais.atm.exception.InsufficientBalanceException;
 import com.mitrais.atm.model.Account;
-import com.mitrais.atm.model.Validation;
 import com.mitrais.atm.validation.TransferValidation;
 
 import java.security.SecureRandom;
@@ -10,30 +12,31 @@ import java.util.Scanner;
 
 public class TransferScreen {
 
-    private static TransferScreen instance;
     private Account account;
     private String accountNumber, referenceNumber;
     private int transferAmount, balance;
 
-    private TransferScreen() {}
+    AccountDao accountDao;
+    TransactionDao transactionDao;
+    LoginScreen loginScreen;
+    TransactionScreen transactionScreen;
 
-    public static TransferScreen getInstance(){
-        if (instance == null) {
-            instance = new TransferScreen();
-        }
-        return instance;
+    public TransferScreen(AccountDao accountDao, Account account) {
+        this.accountDao = accountDao;
+        this.account = account;
     }
 
     /**
      * Shows input destination number to transfer
-     * @param account
      */
-    public void show(Account account) {
-        Validation validateAccountNumber;
+    public void show() {
+        boolean isValid;
         Scanner scanner = new Scanner(System.in);
         String inputAccountNumber;
 
-        this.account = account;
+        loginScreen = new LoginScreen(accountDao);
+        transactionScreen = new TransactionScreen(accountDao, account);
+        transactionDao = new TransactionDaoImpl();
 
         System.out.println("------------------------------------------------");
 
@@ -42,22 +45,21 @@ public class TransferScreen {
             System.out.print("press cancel (Esc) to go back to Transaction: ");
             inputAccountNumber = scanner.nextLine();
 
-            validateAccountNumber = TransferValidation.validateDestinationAccountField(inputAccountNumber);
-            if (!validateAccountNumber.isValid()) {
-                System.out.println(validateAccountNumber.getMessage());
-            } else {
+            isValid = isValidAccountNumber(inputAccountNumber);
+            if (isValid) {
                 accountNumber = inputAccountNumber;
                 showTransferAmount();
             }
+
             System.out.println("------------------------------------------------");
-        } while (!validateAccountNumber.isValid());
+        } while (!isValid);
     }
 
     /**
      * Shows input amount to transfer
      */
     private void showTransferAmount() {
-        Validation validateTransferAmount;
+        boolean isValid;
         Scanner scanner = new Scanner(System.in);
         String inputAmount;
 
@@ -68,21 +70,20 @@ public class TransferScreen {
             System.out.print("press enter to go back to Transaction: ");
             inputAmount = scanner.nextLine();
 
-            validateTransferAmount = TransferValidation.validateTransferAmountField(this.account, inputAmount);
-            if (!validateTransferAmount.isValid()) {
-                System.out.println(validateTransferAmount.getMessage());
-            } else {
+            isValid = isValidTransferAmount(inputAmount);
+            if (isValid) {
                 transferAmount = Integer.valueOf(inputAmount);
                 showReferenceNumber();
             }
+
             System.out.println("------------------------------------------------");
-        } while (!validateTransferAmount.isValid());
+        } while (!isValid);
     }
 
     /**
      * Shows generated reference number
      */
-    public void showReferenceNumber() {
+    private void showReferenceNumber() {
         Scanner scanner = new Scanner(System.in);
 
         referenceNumber = generateReferenceNumber();
@@ -97,7 +98,7 @@ public class TransferScreen {
     /**
      * Shows transfer confirmation
      */
-    public void showTransferConfirmation() {
+    private void showTransferConfirmation() {
         Scanner scanner = new Scanner(System.in);
         String selectedOption;
 
@@ -113,17 +114,26 @@ public class TransferScreen {
         selectedOption = scanner.nextLine();
 
         if (selectedOption.equals("1")) {
-            balance = AccountDaoImpl.getInstance().transferFund(account, AccountDaoImpl.getInstance().getAccount(accountNumber), transferAmount);
-            showTransferSummary();
+            try {
+                Account destinationAccount = accountDao.getAccount(accountNumber);
+                balance = transactionDao.transferFund(account, destinationAccount, transferAmount);
+                showTransferSummary();
+            } catch (InsufficientBalanceException e) {
+                System.out.println("Insufficient balance $" + e.getAmount());
+                show();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                show();
+            }
         } else {
-            show(account);
+            transactionScreen.show();
         }
     }
 
     /**
      * Shows summary of completed transaction
      */
-    public void showTransferSummary() {
+    private void showTransferSummary() {
         Scanner scanner = new Scanner(System.in);
         String selectedOption;
 
@@ -140,9 +150,9 @@ public class TransferScreen {
         selectedOption = scanner.nextLine();
 
         if (selectedOption.equals("1")) {
-            TransactionScreen.getInstance().show(account);
+            transactionScreen.show();
         } else {
-            LoginScreen.getInstance().show();
+            loginScreen.show();
         }
     }
 
@@ -165,4 +175,41 @@ public class TransferScreen {
 
         return sb.toString();
     }
+
+    /**
+     * Shows if inputted account number is valid
+     * @param inputAccountNumber
+     * @return
+     */
+    private boolean isValidAccountNumber(String inputAccountNumber) {
+        boolean isValid;
+        try {
+            TransferValidation.validateDestinationAccountField(accountDao, inputAccountNumber);
+            isValid = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    /**
+     * Shows if inputted transfer amount is valid
+     * @param inputAmount
+     * @return
+     */
+    private boolean isValidTransferAmount(String inputAmount) {
+        boolean isValid;
+        try {
+            TransferValidation.validateTransferAmountField(this.account, inputAmount);
+            isValid = true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
 }
