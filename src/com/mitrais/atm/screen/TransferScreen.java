@@ -116,7 +116,7 @@ public class TransferScreen {
         if (selectedOption.equals("1")) {
             try {
                 Account destinationAccount = accountDao.getAccount(accountNumber);
-                balance = transactionDao.transferFund(account, destinationAccount, transferAmount);
+                balance = transactionDao.transferFund(account, destinationAccount, referenceNumber, transferAmount);
                 showTransferSummary();
             } catch (InsufficientBalanceException e) {
                 System.out.println("Insufficient balance $" + e.getAmount());
