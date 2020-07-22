@@ -1,6 +1,6 @@
 package com.mitrais.atm;
 
-import com.mitrais.atm.screen.LoginScreen;
+import com.mitrais.atm.screen.WelcomeScreen;
 
 public class Main {
 
@@ -9,7 +9,7 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        LoginScreen loginScreen = new LoginScreen();
-        loginScreen.show();
+        WelcomeScreen welcomeScreen = new WelcomeScreen();
+        welcomeScreen.show();
     }
 }
