@@ -8,4 +8,6 @@ public interface AccountDao {
 
     public Account authenticateAccount(String accountNumber, String pin) throws Exception;
 
+    public void seedAccounts(String path) throws Exception;
+
 }

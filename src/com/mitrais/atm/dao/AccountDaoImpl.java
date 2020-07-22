@@ -7,10 +7,12 @@ import java.util.List;
 
 public class AccountDaoImpl implements AccountDao {
 
+    AccountRepository accountRepository;
     List<Account> accounts;
 
     public AccountDaoImpl() {
-        accounts = AccountRepository.getInstance().getAccounts();
+        accountRepository = AccountRepository.getInstance();
+        accounts = accountRepository.getAccounts();
     }
 
     /**
@@ -38,5 +40,18 @@ public class AccountDaoImpl implements AccountDao {
                 .filter(account -> accountNumber.equals(account.getAccountNumber()) && pin.equals(account.getPin()))
                 .findAny()
                 .orElseThrow(() -> new Exception("Invalid Account Number/PIN"));
+    }
+
+    /**
+     * Seed accounts data by provided path or list
+     * @param path
+     */
+    @Override
+    public void seedAccounts(String path) {
+        if (!path.equals("")) {
+            accountRepository.seedFromCsv(path);
+        } else {
+            accountRepository.seedFromList();
+        }
     }
 }
