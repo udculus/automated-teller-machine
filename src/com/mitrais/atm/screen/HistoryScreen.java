@@ -25,8 +25,9 @@ public class HistoryScreen {
         List<Transaction> transactions;
 
         try {
-            System.out.println("------------------------------------------------");
-            System.out.println("Transaction History");
+            System.out.println("-----------------------------------------------------------------------------------------------------");
+            System.out.println("                                      Transaction History                                            ");
+            System.out.println("-----------------------------------------------------------------------------------------------------");
 
             transactions = transactionService.getHistory(Transaction.Type.TRANSFER);
             System.out.println("| Account Number\t| Destination Number\t| Reference Number\t| Amount\t| Time\t\t\t\t\t|");
@@ -34,8 +35,9 @@ public class HistoryScreen {
                 System.out.println("| " + row.getAccountNumber() + "\t\t\t| " + row.getDestinationNumber() + "\t\t\t\t| " + row.getReferenceNumber() + "\t\t\t| " + row.getAmount() + "\t\t| " + row.getTime().format(formatter) + "\t|");
             });
 
-            System.out.println("------------------------------------------------");
-            System.out.println("Withdrawal History");
+            System.out.println("\n---------------------------------------------------------");
+            System.out.println("                   Withdrawal History                    ");
+            System.out.println("---------------------------------------------------------");
 
             transactions = transactionService.getHistory(Transaction.Type.WITHDRAW);
             System.out.println("| Account Number\t| Amount\t| Time\t\t\t\t\t|");
