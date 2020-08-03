@@ -69,12 +69,21 @@ public class TransactionServiceImpl implements TransactionService {
     public List<Transaction> getHistory(Transaction.Type type) throws Exception {
         switch (type) {
             case TRANSFER:
-                return transactions.stream().filter(c -> c.getType().equals(Transaction.Type.TRANSFER)).limit(10).collect(Collectors.toList());
+                return filterTransaction(Transaction.Type.TRANSFER);
             case WITHDRAW:
-                return transactions.stream().filter(c -> c.getType().equals(Transaction.Type.WITHDRAW)).limit(10).collect(Collectors.toList());
+                return filterTransaction(Transaction.Type.WITHDRAW);
             default:
                 throw new Exception("No transactions has been recorded");
         }
+    }
+
+    private List<Transaction> filterTransaction(Transaction.Type type) {
+        return transactions
+                .stream()
+                .sorted((o1, o2) -> o2.getTime().compareTo(o1.getTime()))
+                .filter(c -> c.getType().equals(type))
+                .limit(10)
+                .collect(Collectors.toList());
     }
 
 }
