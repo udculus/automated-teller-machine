@@ -10,7 +10,6 @@ import java.util.Scanner;
 public class LoginScreen {
 
     private AccountDao accountDao = new AccountDaoImpl();
-    private TransactionScreen transactionScreen;
 
     /**
      * Shows login screen by inputting account and pin number
@@ -47,8 +46,7 @@ public class LoginScreen {
     private void authenticateAccount(String inputAccountNumber, String inputPin) {
         try {
             Account account = accountDao.authenticateAccount(inputAccountNumber, inputPin);
-            transactionScreen = new TransactionScreen(account);
-            transactionScreen.show();
+            new TransactionScreen(account).show();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             show();

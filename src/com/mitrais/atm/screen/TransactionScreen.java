@@ -7,10 +7,6 @@ import java.util.Scanner;
 public class TransactionScreen {
 
     private Account account;
-    private LoginScreen loginScreen;
-    private TransferScreen transferScreen;
-    private WithdrawScreen withdrawScreen;
-    private HistoryScreen historyScreen;
 
     public TransactionScreen(Account account) {
         this.account = account;
@@ -20,11 +16,6 @@ public class TransactionScreen {
      * Shows transaction options
      */
     public void show() {
-        withdrawScreen = new WithdrawScreen(account);
-        transferScreen = new TransferScreen(account);
-        historyScreen = new HistoryScreen(account);
-        loginScreen = new LoginScreen();
-
         Scanner scanner = new Scanner(System.in);
         String selectedOption;
 
@@ -38,13 +29,13 @@ public class TransactionScreen {
         selectedOption = scanner.nextLine();
 
         if (selectedOption.equals("1")) {
-            withdrawScreen.show();
+            new WithdrawScreen(account).show();
         } else if (selectedOption.equals("2")) {
-            transferScreen.show();
+            new TransferScreen(account).show();
         } else if (selectedOption.equals("3")) {
-            historyScreen.show();
+            new HistoryScreen(account).show();
         } else if (selectedOption.equals("4") || selectedOption.equals("")) {
-            loginScreen.show();
+            new LoginScreen().show();
         } else {
             show();
         }

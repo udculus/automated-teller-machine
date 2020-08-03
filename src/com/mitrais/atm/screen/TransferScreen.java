@@ -14,10 +14,8 @@ import java.util.Scanner;
 public class TransferScreen {
 
     private AccountDao accountDao = new AccountDaoImpl();
+    private TransactionDao transactionDao = new TransactionDaoImpl();
     private Account account;
-    private TransactionDao transactionDao;
-    private LoginScreen loginScreen;
-    private TransactionScreen transactionScreen;
 
     private String accountNumber, referenceNumber;
     private int transferAmount, balance;
@@ -33,10 +31,6 @@ public class TransferScreen {
         boolean isValid;
         Scanner scanner = new Scanner(System.in);
         String inputAccountNumber;
-
-        loginScreen = new LoginScreen();
-        transactionScreen = new TransactionScreen(account);
-        transactionDao = new TransactionDaoImpl();
 
         System.out.println("------------------------------------------------");
 
@@ -126,7 +120,7 @@ public class TransferScreen {
                 show();
             }
         } else {
-            transactionScreen.show();
+            new TransactionScreen(account).show();
         }
     }
 
@@ -150,9 +144,9 @@ public class TransferScreen {
         selectedOption = scanner.nextLine();
 
         if (selectedOption.equals("1")) {
-            transactionScreen.show();
+            new TransactionScreen(account).show();
         } else {
-            loginScreen.show();
+            new LoginScreen().show();
         }
     }
 

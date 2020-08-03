@@ -9,7 +9,6 @@ import java.util.Scanner;
 public class WelcomeScreen {
 
     private AccountDao accountDao = new AccountDaoImpl();
-    private LoginScreen loginScreen = new LoginScreen();
 
     /**
      * Prompt user to provide account csv file
@@ -28,7 +27,7 @@ public class WelcomeScreen {
             try {
                 AccountValidation.validateSourceFile(inputFilePath);
                 accountDao.seedAccounts(inputFilePath);
-                loginScreen.show();
+                new LoginScreen().show();
                 isValid = true;
             } catch (Exception e) {
                 System.out.println(e.getMessage());

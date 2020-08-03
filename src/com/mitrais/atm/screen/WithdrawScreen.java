@@ -14,8 +14,6 @@ public class WithdrawScreen {
 
     private TransactionDao transactionDao = new TransactionDaoImpl();
     private Account account;
-    private LoginScreen loginScreen;
-    private TransactionScreen transactionScreen;
 
     public WithdrawScreen(Account account) {
         this.account = account;
@@ -25,8 +23,6 @@ public class WithdrawScreen {
      * Shows withdrawal options
      */
     public void show() {
-        transactionScreen = new TransactionScreen(account);
-
         Scanner scanner = new Scanner(System.in);
         String selectedOption;
 
@@ -54,7 +50,7 @@ public class WithdrawScreen {
                 showCustomWithdrawal(account);
                 break;
             case "5":
-                transactionScreen.show();
+                new TransactionScreen(account).show();
                 break;
             default:
                 show();
@@ -140,10 +136,9 @@ public class WithdrawScreen {
         selectedOption = scanner.nextLine();
 
         if (selectedOption.equals("1")) {
-            transactionScreen.show();
+            new TransactionScreen(account).show();
         } else {
-            loginScreen = new LoginScreen();
-            loginScreen.show();
+            new LoginScreen().show();
         }
     }
 }

@@ -12,8 +12,7 @@ import java.util.Scanner;
 public class HistoryScreen {
 
     private Account account;
-    TransactionScreen transactionScreen;
-    TransactionDao transactionDao;
+    private TransactionDao transactionDao = new TransactionDaoImpl();;
 
     public HistoryScreen(Account account) { this.account = account; }
 
@@ -23,8 +22,6 @@ public class HistoryScreen {
     public void show() {
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-        transactionDao = new TransactionDaoImpl();
-        transactionScreen = new TransactionScreen(account);
 
         System.out.println("------------------------------------------------");
         System.out.println("Transaction History");
@@ -38,11 +35,10 @@ public class HistoryScreen {
 
             System.out.print("\nPress enter to go back to transaction menu: ");
             scanner.nextLine();
-
-            transactionScreen.show();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            transactionScreen.show();
         }
+
+        new TransactionScreen(account).show();
     }
 }
