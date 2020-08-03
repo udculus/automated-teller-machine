@@ -9,7 +9,6 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-        WelcomeScreen welcomeScreen = new WelcomeScreen();
-        welcomeScreen.show();
+        new WelcomeScreen().show();
     }
 }

@@ -32,16 +32,8 @@ public class AccountRepository {
     /**
      * Seed account from provided path
      */
-    public void seedFromCsv(String path) {
-        try (Stream<String> streamData = Files.lines(Paths.get(path))) {
-            streamData.filter(line -> !line.startsWith("Name")).forEach(line -> {
-                String cells[] = line.split(",");
-                accounts.add(new Account(cells[3], cells[1], cells[0], Integer.valueOf(cells[2])));
-            });
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
+    public void seedFromData(List<Account> accounts) {
+        this.accounts = accounts;
     }
 
     public List<Account> getAccounts() {

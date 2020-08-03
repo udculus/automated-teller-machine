@@ -1,9 +1,9 @@
 package com.mitrais.atm.screen;
 
-import com.mitrais.atm.dao.AccountDao;
-import com.mitrais.atm.dao.AccountDaoImpl;
-import com.mitrais.atm.dao.TransactionDao;
-import com.mitrais.atm.dao.TransactionDaoImpl;
+import com.mitrais.atm.service.AccountService;
+import com.mitrais.atm.service.AccountServiceImpl;
+import com.mitrais.atm.service.TransactionService;
+import com.mitrais.atm.service.TransactionServiceImpl;
 import com.mitrais.atm.exception.InsufficientBalanceException;
 import com.mitrais.atm.model.Account;
 import com.mitrais.atm.validation.TransferValidation;
@@ -13,8 +13,8 @@ import java.util.Scanner;
 
 public class TransferScreen {
 
-    private AccountDao accountDao = new AccountDaoImpl();
-    private TransactionDao transactionDao = new TransactionDaoImpl();
+    private AccountService accountService = new AccountServiceImpl();
+    private TransactionService transactionService = new TransactionServiceImpl();
     private Account account;
 
     private String accountNumber, referenceNumber;
@@ -109,8 +109,8 @@ public class TransferScreen {
 
         if (selectedOption.equals("1")) {
             try {
-                Account destinationAccount = accountDao.getAccount(accountNumber);
-                balance = transactionDao.transferFund(account, destinationAccount, referenceNumber, transferAmount);
+                Account destinationAccount = accountService.getAccount(accountNumber);
+                balance = transactionService.transferFund(account, destinationAccount, referenceNumber, transferAmount);
                 showTransferSummary();
             } catch (InsufficientBalanceException e) {
                 System.out.println("Insufficient balance $" + e.getAmount());
@@ -178,7 +178,7 @@ public class TransferScreen {
     private boolean isValidAccountNumber(String inputAccountNumber) {
         boolean isValid;
         try {
-            TransferValidation.validateDestinationAccountField(accountDao, inputAccountNumber);
+            TransferValidation.validateDestinationAccountField(accountService, inputAccountNumber);
             isValid = true;
         } catch (Exception e) {
             System.out.println(e.getMessage());

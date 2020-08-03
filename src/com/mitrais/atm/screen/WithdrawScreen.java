@@ -1,7 +1,7 @@
 package com.mitrais.atm.screen;
 
-import com.mitrais.atm.dao.TransactionDao;
-import com.mitrais.atm.dao.TransactionDaoImpl;
+import com.mitrais.atm.service.TransactionService;
+import com.mitrais.atm.service.TransactionServiceImpl;
 import com.mitrais.atm.exception.InsufficientBalanceException;
 import com.mitrais.atm.model.Account;
 import com.mitrais.atm.validation.WithdrawValidation;
@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class WithdrawScreen {
 
-    private TransactionDao transactionDao = new TransactionDaoImpl();
+    private TransactionService transactionService = new TransactionServiceImpl();
     private Account account;
 
     public WithdrawScreen(Account account) {
@@ -64,7 +64,7 @@ public class WithdrawScreen {
      */
     private void withdraw(Account account, int amount) {
         try {
-            transactionDao.withdraw(account, amount);
+            transactionService.withdraw(account, amount);
             showSummaryWithdrawal(account, amount);
         } catch (InsufficientBalanceException e) {
             System.out.println("Insufficient balance $" + e.getAmount());

@@ -1,14 +1,14 @@
 package com.mitrais.atm.screen;
 
-import com.mitrais.atm.dao.AccountDao;
-import com.mitrais.atm.dao.AccountDaoImpl;
-import com.mitrais.atm.validation.AccountValidation;
+import com.mitrais.atm.service.AccountService;
+import com.mitrais.atm.service.AccountServiceImpl;
+import com.mitrais.atm.validation.FileValidation;
 
 import java.util.Scanner;
 
 public class WelcomeScreen {
 
-    private AccountDao accountDao = new AccountDaoImpl();
+    private AccountService accountService = new AccountServiceImpl();
 
     /**
      * Prompt user to provide account csv file
@@ -25,8 +25,8 @@ public class WelcomeScreen {
             inputFilePath = scanner.nextLine();
 
             try {
-                AccountValidation.validateSourceFile(inputFilePath);
-                accountDao.seedAccounts(inputFilePath);
+                FileValidation.validateSourceFile(inputFilePath);
+                accountService.seedAccounts(inputFilePath);
                 new LoginScreen().show();
                 isValid = true;
             } catch (Exception e) {

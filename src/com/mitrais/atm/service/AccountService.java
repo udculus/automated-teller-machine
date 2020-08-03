@@ -1,8 +1,8 @@
-package com.mitrais.atm.dao;
+package com.mitrais.atm.service;
 
 import com.mitrais.atm.model.Account;
 
-public interface AccountDao {
+public interface AccountService {
 
     public Account getAccount(String accountNumber) throws Exception;
 

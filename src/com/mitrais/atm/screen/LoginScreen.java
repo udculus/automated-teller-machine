@@ -1,7 +1,7 @@
 package com.mitrais.atm.screen;
 
-import com.mitrais.atm.dao.AccountDao;
-import com.mitrais.atm.dao.AccountDaoImpl;
+import com.mitrais.atm.service.AccountService;
+import com.mitrais.atm.service.AccountServiceImpl;
 import com.mitrais.atm.model.Account;
 import com.mitrais.atm.validation.LoginValidation;
 
@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class LoginScreen {
 
-    private AccountDao accountDao = new AccountDaoImpl();
+    private AccountService accountService = new AccountServiceImpl();
 
     /**
      * Shows login screen by inputting account and pin number
@@ -45,7 +45,7 @@ public class LoginScreen {
      */
     private void authenticateAccount(String inputAccountNumber, String inputPin) {
         try {
-            Account account = accountDao.authenticateAccount(inputAccountNumber, inputPin);
+            Account account = accountService.authenticateAccount(inputAccountNumber, inputPin);
             new TransactionScreen(account).show();
         } catch (Exception e) {
             System.out.println(e.getMessage());

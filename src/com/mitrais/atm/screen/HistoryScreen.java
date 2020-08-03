@@ -1,7 +1,7 @@
 package com.mitrais.atm.screen;
 
-import com.mitrais.atm.dao.TransactionDao;
-import com.mitrais.atm.dao.TransactionDaoImpl;
+import com.mitrais.atm.service.TransactionService;
+import com.mitrais.atm.service.TransactionServiceImpl;
 import com.mitrais.atm.model.Account;
 import com.mitrais.atm.model.Transaction;
 
@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class HistoryScreen {
 
     private Account account;
-    private TransactionDao transactionDao = new TransactionDaoImpl();;
+    private TransactionService transactionService = new TransactionServiceImpl();;
 
     public HistoryScreen(Account account) { this.account = account; }
 
@@ -27,7 +27,7 @@ public class HistoryScreen {
         System.out.println("Transaction History");
 
         try {
-            List<Transaction> transactions = transactionDao.getHistory();
+            List<Transaction> transactions = transactionService.getHistory();
             System.out.println("| Account Number\t| Destination Number\t| Reference Number\t| Amount\t| Time\t\t\t\t\t|");
             transactions.forEach( row -> {
                 System.out.println("| " + row.getAccountNumber() + "\t\t\t| " + row.getDestinationNumber() + "\t\t\t\t| " + row.getReferenceNumber() + "\t\t\t| " + row.getAmount() + "\t\t| " + row.getTime().format(formatter) + "\t|");

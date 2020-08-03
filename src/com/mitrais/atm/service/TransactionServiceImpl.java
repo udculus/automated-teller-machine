@@ -1,4 +1,4 @@
-package com.mitrais.atm.dao;
+package com.mitrais.atm.service;
 
 import com.mitrais.atm.exception.InsufficientBalanceException;
 import com.mitrais.atm.model.Account;
@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TransactionDaoImpl implements TransactionDao {
+public class TransactionServiceImpl implements TransactionService {
 
     TransactionRepository transactionRepository;
     List<Transaction> transactions;
 
-    public TransactionDaoImpl() {
+    public TransactionServiceImpl() {
         transactionRepository = TransactionRepository.getInstance();
         transactions = transactionRepository.getTransactions();
     }

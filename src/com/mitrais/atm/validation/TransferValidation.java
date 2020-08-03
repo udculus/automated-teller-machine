@@ -1,6 +1,6 @@
 package com.mitrais.atm.validation;
 
-import com.mitrais.atm.dao.AccountDao;
+import com.mitrais.atm.service.AccountService;
 import com.mitrais.atm.model.Account;
 import com.mitrais.atm.model.Validation;
 
@@ -11,12 +11,12 @@ public class TransferValidation {
      * @param accountNumber
      * @return
      */
-    public static void validateDestinationAccountField(AccountDao accountDao, String accountNumber) throws Exception {
+    public static void validateDestinationAccountField(AccountService accountService, String accountNumber) throws Exception {
         Validation validation = new Validation();
 
         if (accountNumber.matches("[0-9]+")) {
             try {
-                accountDao.getAccount(accountNumber);
+                accountService.getAccount(accountNumber);
             } catch (Exception e) {
                 validation.setMessage(e.getMessage());
                 validation.setValid(false);
