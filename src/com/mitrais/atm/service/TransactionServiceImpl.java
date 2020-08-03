@@ -40,7 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
             account.setBalance(accountBalance);
             receiver.setBalance(receiverBalance);
 
-            transactions.add(new Transaction(account.getAccountNumber(), receiver.getAccountNumber(), referenceNumber, amount, LocalDateTime.now()));
+            transactions.add(new Transaction(account.getAccountNumber(), receiver.getAccountNumber(), referenceNumber, amount, LocalDateTime.now(), Transaction.Type.TRANSFER ));
         }
 
         return accountBalance;
@@ -60,17 +60,21 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             accountBalance -= amount;
             account.setBalance(accountBalance);
+
+            transactions.add(new Transaction(account.getAccountNumber(), null, null, amount, LocalDateTime.now(), Transaction.Type.WITHDRAW ));
         }
     }
 
     @Override
-    public List<Transaction> getHistory() throws Exception {
-        if (transactions.size() < 1) {
-            throw new Exception("No transactions has been recorded");
-        } else {
-            return transactions.stream().limit(10).collect(Collectors.toList());
+    public List<Transaction> getHistory(Transaction.Type type) throws Exception {
+        switch (type) {
+            case TRANSFER:
+                return transactions.stream().filter(c -> c.getType().equals(Transaction.Type.TRANSFER)).limit(10).collect(Collectors.toList());
+            case WITHDRAW:
+                return transactions.stream().filter(c -> c.getType().equals(Transaction.Type.WITHDRAW)).limit(10).collect(Collectors.toList());
+            default:
+                throw new Exception("No transactions has been recorded");
         }
     }
-
 
 }

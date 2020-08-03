@@ -22,15 +22,25 @@ public class HistoryScreen {
     public void show() {
         Scanner scanner = new Scanner(System.in);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-
-        System.out.println("------------------------------------------------");
-        System.out.println("Transaction History");
+        List<Transaction> transactions;
 
         try {
-            List<Transaction> transactions = transactionService.getHistory();
+            System.out.println("------------------------------------------------");
+            System.out.println("Transaction History");
+
+            transactions = transactionService.getHistory(Transaction.Type.TRANSFER);
             System.out.println("| Account Number\t| Destination Number\t| Reference Number\t| Amount\t| Time\t\t\t\t\t|");
             transactions.forEach( row -> {
                 System.out.println("| " + row.getAccountNumber() + "\t\t\t| " + row.getDestinationNumber() + "\t\t\t\t| " + row.getReferenceNumber() + "\t\t\t| " + row.getAmount() + "\t\t| " + row.getTime().format(formatter) + "\t|");
+            });
+
+            System.out.println("------------------------------------------------");
+            System.out.println("Withdrawal History");
+
+            transactions = transactionService.getHistory(Transaction.Type.WITHDRAW);
+            System.out.println("| Account Number\t| Amount\t| Time\t\t\t\t\t|");
+            transactions.forEach( row -> {
+                System.out.println("| " + row.getAccountNumber() + "\t\t\t| " + row.getAmount() + "\t\t| " + row.getTime().format(formatter) + "\t|");
             });
 
             System.out.print("\nPress enter to go back to transaction menu: ");

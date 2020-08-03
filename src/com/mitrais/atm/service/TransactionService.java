@@ -12,6 +12,6 @@ public interface TransactionService {
 
     public void withdraw(Account account, int amount) throws InsufficientBalanceException;
 
-    public List<Transaction> getHistory() throws Exception;
+    public List<Transaction> getHistory(Transaction.Type type) throws Exception;
 
 }
